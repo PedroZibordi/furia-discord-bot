@@ -1,5 +1,8 @@
 # 🤖 FURIA Tech Discord Bot
 
+[🔗 Convidar o Bot para o seu servidor](https://discord.com/oauth2/authorize?client_id=1367631307533979648&scope=bot&permissions=83968
+)
+
 **Bot de apoio aos fãs da FURIA CS:GO**  
 - Placar ao vivo  
 - Próximos jogos  
