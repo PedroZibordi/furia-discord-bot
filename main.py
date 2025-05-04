@@ -1,5 +1,3 @@
-# main.py
-
 import os
 import random
 import asyncio
@@ -138,7 +136,7 @@ def get_twitch_token():
     except requests.RequestException:
         return None
 
-def fetch_stream_link(channel_name="furia"):
+def fetch_stream_link(channel_name="furiatv"):
     token = get_twitch_token()
     if not token:
         return None
@@ -158,7 +156,7 @@ def fetch_stream_link(channel_name="furia"):
         s = data[0]
         title = s.get("title", "")
         thumb = s.get("thumbnail_url", "").replace("{width}", "320").replace("{height}", "180")
-        url   = f"https://twitch.tv/{channel_name}"
+        url   = f"https://www.twitch.tv/{channel_name}"
         return title, thumb, url
     except requests.RequestException:
         return None
@@ -168,10 +166,37 @@ intents = discord.Intents.default()
 intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+# ─── Evento on_ready ─────────────────────────────────────
 @bot.event
 async def on_ready():
     print(f"✅ Bot conectado como {bot.user}")
 
+# ─── Evento on_guild_join ───────────────────────────────
+@bot.event
+async def on_guild_join(guild):
+    """
+    Disparado quando o bot entra em um novo servidor.
+    Envia saudação automática no canal apropriado.
+    """
+    channel = guild.system_channel
+    if channel is None or not channel.permissions_for(guild.me).send_messages:
+        for ch in guild.text_channels:
+            if ch.permissions_for(guild.me).send_messages:
+                channel = ch
+                break
+
+    if channel:
+        embed = discord.Embed(
+            title="Fala, guerreiro(a)! 🖤🔥",
+            description=(
+                "Aqui é o Contato Inteligente da FURIA! 👊\n\n"
+                "Digite `!start` para ver o menu inicial com todas as opções."
+            ),
+            color=0xE50914
+        )
+        await channel.send(embed=embed)
+
+# ─── Evento on_command_error ───────────────────────────
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -193,7 +218,7 @@ async def start(ctx):
             "`!status` – Placar ao vivo\n"
             "`!proximos` – Próximos jogos\n"
             "`!resultados` – Resultados recentes\n"
-            "`!alerta` – Alerta de início de jogo\n"
+            "`!alerta` – Alerta demonstrativo\n"
             "`!votar <nome>` – Votar no MVP\n"
             "`!clip` – Highlight aleatório\n"
             "`!ping` – Testar latência\n"
@@ -272,7 +297,6 @@ async def resultados(ctx):
 async def alerta(ctx):
     proximos_jogo = fetch_upcoming_matches(limit=1)
     if not proximos_jogo:
-        # Demo estático se não houver próximos reais
         jogo = {"date": "2025-05-06 18:00", "match_name": "FURIA vs ENCE (DEMO)"}
     else:
         jogo = proximos_jogo[0]
@@ -303,7 +327,7 @@ async def ping(ctx):
 
 @bot.command(name="stream")
 async def stream(ctx):
-    info = fetch_stream_link("furia")
+    info = fetch_stream_link("furiatv")
     if info:
         title, thumb, url = info
         embed = discord.Embed(
@@ -316,7 +340,7 @@ async def stream(ctx):
     else:
         embed = discord.Embed(
             title="🔴 FURIA não está ao vivo agora.",
-            description="Você pode acompanhar o canal: https://twitch.tv/furia",
+            description="Você pode acompanhar o canal: https://www.twitch.tv/furiatv",
             color=0x9146FF
         )
     await ctx.send(embed=embed)
@@ -349,7 +373,7 @@ async def ajuda(ctx):
         "!status":     "Placar ao vivo",
         "!proximos":   "Próximos jogos",
         "!resultados": "Resultados recentes",
-        "!alerta":     "Alerta de início de jogo",
+        "!alerta":     "Alerta demonstrativo",
         "!votar <nome>":"Votar no MVP",
         "!clip":       "Highlight aleatório",
         "!ping":       "Teste de latência",
@@ -360,5 +384,6 @@ async def ajuda(ctx):
         embed.add_field(name=c, value=d, inline=False)
     await ctx.send(embed=embed)
 
+# ─── Inicia o bot ───────────────────────────────────────
 if __name__ == "__main__":
     bot.run(Config.DISCORD_TOKEN)
