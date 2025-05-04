@@ -39,7 +39,8 @@
 
 1. **Clone o repositório**  
    ```bash
-   git clone https://github.com/SEU_USUARIO/furia-discord-bot.git
+   git clone https://github.com/PedroZibordi/furia-discord-bot.git
+
    cd furia-discord-bot
 
 2. **Crie um ambiente virtual**  
