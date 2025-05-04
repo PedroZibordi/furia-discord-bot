@@ -1,0 +1,8 @@
+# Ignora a pasta do ambiente virtual
+venv/
+
+# Cache do Python
+__pycache__/
+
+# Variáveis de ambiente (seu token)
+.env
