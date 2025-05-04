@@ -58,8 +58,11 @@ pip install -r requirements.txt
 Na raiz, crie um arquivo .env contendo:
 
 DISCORD_TOKEN=seu_discord_bot_token
+
 PANDASCORE_TOKEN=seu_pandascore_token
+
 TWITCH_CLIENT_ID=seu_twitch_client_id
+
 TWITCH_CLIENT_SECRET=seu_twitch_client_secret
 
 5. **Execute localmente**
